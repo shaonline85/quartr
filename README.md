@@ -2,6 +2,10 @@
 
 Small Next.js app that renders a **Trending Companies** list on the home page and provides a **Company Details** page for each company. The codebase is structured for readability: typed data model, single-responsibility modules/components, and a small test suite.
 
+## Live demo
+
+The application implementation can be seen here: [quartr-assignment.vercel.app](https://quartr-assignment.vercel.app/)
+
 ## Features
 
 - **Home page**: Trending companies list with accessible markup and internal navigation.
