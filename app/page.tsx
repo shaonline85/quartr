@@ -1,31 +1,25 @@
-"use client";
+import { TrendingCompanies } from "@/components/trending-companies/TrendingCompanies";
+import { getTrendingCompanies } from "@/lib/companies/getTrendingCompanies";
+import type { Metadata } from "next";
 
-import { Inter } from "@next/font/google";
-import { useEffect, useState } from "react";
-const inter = Inter({ subsets: ["latin"] });
+export const metadata = {
+  title: "Home",
+  description: "Trending companies on Quartr.",
+} satisfies Metadata;
 
-export default function Home() {
-  const [stuff1, setStuff1] = useState<any>([]);
-  useEffect(() => {
-    // declare the data fetching function
-    const fetchData = async () => {
-      const data = await fetch("/api/companies");
-      const data2 = await data.json();
-      console.log(data2);
-      setStuff1(data2);
-    };
-
-    // call the function
-    fetchData()
-      // make sure to catch any error
-      .catch(console.error);
-  }, []);
+export default async function Home() {
+  const companies = await getTrendingCompanies();
 
   return (
-    <main>
-      <h2 className={inter.className}>Quartr</h2>
-      <p className={inter.className}>Trending companies</p>
-      <p>{JSON.stringify(stuff1)}</p>
-    </main>
+    <div className="mx-auto max-w-4xl px-4 py-10">
+      <header className="mb-6">
+        <h1 className="text-2xl font-semibold tracking-tight">Quartr</h1>
+        <p className="mt-1 text-sm text-slate-600">
+          A small list of trending companies.
+        </p>
+      </header>
+
+      <TrendingCompanies companies={companies} />
+    </div>
   );
 }

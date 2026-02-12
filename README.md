@@ -1,49 +1,67 @@
-## Installation
+## Quartr – Assignment (Next.js App Router)
 
-This project is based on NextJS 13, and requires node 16.13.0 or higher.
+Small Next.js app that renders a **Trending Companies** list on the home page and provides a **Company Details** page for each company. The codebase is structured for readability: typed data model, single-responsibility modules/components, and a small test suite.
 
-**Installation**
+## Features
+
+- **Home page**: Trending companies list with accessible markup and internal navigation.
+- **Company details**: `/companies/[companyId]` route with basic company information and external links.
+- **API**: `/api/companies` returns `{ data: Company[] }`.
+- **ISR-style data caching** (optional external API): server fetch is cached and can be invalidated via on-demand revalidation.
+- **Performance**: company logos are rendered via `next/image`.
+- **Tests**: Jest + Testing Library (see `tests/`).
+
+## Requirements
+
+This project is based on **Next.js (App Router)** and requires **Node 18+**.
+
+## Quickstart
 
 ```
 npm install
-```
-
-**Running the application**
-
-```
 npm run dev
 ```
 
-## Your assignment
+Open `http://localhost:3000`.
 
-We are going to display a list of trending companies on our start page, your assigment is to create a list of companies that we can display on our start page. The design is not complete, but should give you a good idea on what direction to take. The code provided is functional, but it’s difficult to read and understand. It needs significant refactoring to improve its structure and maintainability.
+## Routes
 
-You can find a link to the Figma [here](https://www.figma.com/file/PWNtHgOgjeYYGmQIYpLkm4/Quartr?node-id=0%3A1&t=49UGjItn5gFyMAku-0).
+- **Home**: `/`
+- **Company details**: `/companies/1` (replace `1` with any existing `companyId`)
+- **Companies API**: `/api/companies`
 
-## Instructions
+## Data source & caching (ISR-style)
 
-You can make any modifications or suggestions for modifications that you see fit. Fork this repository and deliver your results via a pull-request or send us an e-mail. You could also create a gist, for privacy reasons, and send us the link.
+By default, the app uses the local dataset in `lib/companies/companiesData.ts`.
 
-During a technical interview, we will discuss this task and have a closer look at the code together with you. You should be able to explain your considerations of the code implementation. 
+Optionally, you can point the app to an external API by setting `COMPANIES_API_URL` to an absolute URL that returns:
 
-## Completion time
+- `{ "data": Company[] }`
 
-The time you spend on this test is not limited. The idea is to take your time, respect the assignment, and send us the result when you are happy with it. But please let us know if there are circumstances delaying your submission of the code. 
+The external fetch is cached with `revalidate: 14400` (4 hours) and tagged as `companies`.
 
-## What we expect
+### On-demand revalidation
 
-- A clean and well-structured readable code, where it is easy to understand what is going on
-- Organizing the code in a way where every function or component is responsible for only one thing
-- Usage of Typescript, and good practices using interfaces where needed
+When your upstream data changes (e.g. a CMS publish event), trigger a cache invalidation by calling:
 
-## Appreciated with the implementation
+- **Endpoint**: `POST /api/revalidate`
+- **Auth**: send header `x-revalidate-secret: <REVALIDATE_SECRET>`
 
-⚠️ Those are not required, but can give you some advice how to make your task look even better.
+This revalidates the `companies` tag, so subsequent requests pick up fresh data without waiting for the full cache window.
 
-- Unit and functional tests: a 100% coverage is not necessary, just make them pertinent
-- Good accessibility practices
-- Usage of the state co-location pattern
+## Environment variables
 
-Technical constraints
+Create `.env.local`:
 
-- Use React 17+ and TypeScript
+```
+COMPANIES_API_URL=
+REVALIDATE_SECRET=
+```
+
+## Scripts
+
+- `npm run dev`: start dev server
+- `npm run build`: production build
+- `npm run start`: start production server
+- `npm run lint`: run Next.js ESLint
+- `npm test`: run Jest tests
